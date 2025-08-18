@@ -1,0 +1,15 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; }
+.container { max-width: 800px; margin: 40px auto; padding: 30px; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+nav { padding: 15px 20px; background: #1a2b3c; color: white; }
+nav a { color: #4fc3f7; text-decoration: none; }
+input, button, select { padding: 12px; margin: 10px 0; width: 100%; border: 1px solid #ddd; border-radius: 6px; font-size: 16px; }
+button { background: #4caf50; color: white; border: none; cursor: pointer; }
+button:hover { background: #388e3c; }
+.card { display: block; padding: 40px; margin: 20px 0; background: #2196f3; color: white; text-align: center; font-size: 18px; border-radius: 8px; text-decoration: none; }
+.card:hover { background: #1976d2; }
+.dashboard { text-align: center; padding: 40px 0; }
+.cards { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin-top: 30px; }
+ul { list-style: none; margin: 10px 0; }
+ul li { padding: 15px; background: #f0f0f0; border-radius: 6px; margin: 8px 0; cursor: pointer; }
+ul li:hover { background: #e0e0e0; }

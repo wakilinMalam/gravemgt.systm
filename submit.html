@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Submit Deceased</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav><a href="dashboard.html">← Back</a></nav>
+  <div class="form-container">
+    <h1>Submit Deceased Details</h1>
+    <form id="deceasedForm">
+      <input type="text" id="fullName" placeholder="Full Name" required />
+      <input type="number" id="height" placeholder="Height (cm)" required />
+      <input type="number" id="lenth" placeholder="lenth (m)" required />
+      <button type="submit">Submit</button>
+    </form>
+    <p id="successMsg" style="color:green; display:none;">✅ Submitted! You'll be notified when a grave is allocated.</p>
+  </div>
+
+  <script src="submit.js"></script>
+</body>
+</html>
