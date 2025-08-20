@@ -35,3 +35,12 @@ function showLogin() {
   document.getElementById('registerForm').style.display = 'none';
   document.getElementById('loginForm').style.display = 'block';
 }
+let users = JSON.parse(localStorage.getItem('users'));
+users = users.map(u => {
+  if (u.email === 'admin@demo.com') {
+    u.role = 'ADMIN';
+  }
+  return u;
+});
+localStorage.setItem('users', JSON.stringify(users));
+console.log("Admin role assigned!");
