@@ -1,0 +1,1640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graveyard Management System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #34495e;
+            --accent: #16a085;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --gray: #95a5a6;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7f9;
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background-image: url('https://images.unsplash.com/photo-1544531585-9847b68c8fbd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1600&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: -1;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        
+        /* Login Screen */
+        #login-screen {
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .logo {
+            margin-bottom: 30px;
+        }
+        
+        .logo h1 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .logo p {
+            color: var(--gray);
+            font-size: 1.1rem;
+        }
+        
+        .login-options {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .login-card {
+            background: var(--light);
+            border-radius: 10px;
+            padding: 30px;
+            width: 300px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+        
+        .login-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .login-card h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        
+        .login-form {
+            text-align: left;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #1abc9c;
+        }
+        
+        .btn-block {
+            width: 100%;
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+        
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+            margin-top: 15px;
+        }
+        
+        .btn-secondary:hover {
+            background: var(--primary);
+        }
+        
+        /* Notification Badge */
+        .notification-badge {
+            background: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.8rem;
+            position: absolute;
+            top: 5px;
+            right: 5px;
+        }
+        
+        .notification-item {
+            position: relative;
+        }
+        
+        /* Admin Portal */
+        #admin-portal {
+            display: none;
+            min-height: 600px;
+        }
+        
+        .portal-container {
+            display: flex;
+            min-height: 100%;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background: var(--primary);
+            color: white;
+            padding: 20px 0;
+        }
+        
+        .portal-logo {
+            text-align: center;
+            padding: 20px;
+            background: var(--secondary);
+            margin-bottom: 20px;
+        }
+        
+        .portal-logo h2 {
+            font-size: 1.5rem;
+        }
+        
+        .menu {
+            list-style: none;
+        }
+        
+        .menu-item {
+            padding: 15px 20px;
+            border-left: 4px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+        
+        .menu-item:hover {
+            background: var(--secondary);
+            border-left: 4px solid var(--accent);
+        }
+        
+        .menu-item.active {
+            background: var(--secondary);
+            border-left: 4px solid var(--accent);
+        }
+        
+        .menu-item i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        /* Card Styles */
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .card-title {
+            font-size: 1.2rem;
+            color: var(--dark);
+        }
+        
+        /* Table Styles */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .table th, .table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        .table tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .action-buttons button {
+            margin-right: 5px;
+        }
+        
+        /* Dashboard Stats */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-right: 15px;
+        }
+        
+        .stat-icon.primary {
+            background: rgba(22, 160, 133, 0.2);
+            color: var(--accent);
+        }
+        
+        .stat-icon.warning {
+            background: rgba(243, 156, 18, 0.2);
+            color: var(--warning);
+        }
+        
+        .stat-icon.danger {
+            background: rgba(231, 76, 60, 0.2);
+            color: var(--danger);
+        }
+        
+        .stat-info h3 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+        
+        .stat-info p {
+            color: var(--gray);
+        }
+        
+        /* Section Styles */
+        .section {
+            display: none;
+        }
+        
+        .section.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Visitor Portal */
+        #visitor-portal {
+            display: none;
+            padding: 30px;
+        }
+        
+        .visitor-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .visitor-options {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 40px;
+        }
+        
+        .visitor-option {
+            background: var(--light);
+            border-radius: 10px;
+            padding: 30px;
+            width: 300px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .visitor-option:hover {
+            transform: translateY(-5px);
+            background: var(--accent);
+            color: white;
+        }
+        
+        .visitor-option i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+        
+        .visitor-option h3 {
+            margin-bottom: 10px;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .login-options {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .portal-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+            }
+            
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .visitor-options {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Login Screen -->
+        <div id="login-screen">
+            <div class="logo">
+                <h1><i class="fas fa-monument"></i> Graveyard Management System</h1>
+                <p>Comprehensive solution for managing graves and visitor interactions</p>
+            </div>
+            
+            <div class="login-options">
+                <div class="login-card">
+                    <h2><i class="fas fa-user"></i> Visitor Login</h2>
+                    <form class="login-form" id="visitor-login-form">
+                        <div class="form-group">
+                            <label class="form-label">Username</label>
+                            <input type="text" class="form-control" id="visitor-username" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Password</label>
+                            <input type="password" class="form-control" id="visitor-password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Login</button>
+                        <button type="button" class="btn btn-secondary btn-block" id="show-admin-login">Admin Login</button>
+                    </form>
+                </div>
+                
+                <div class="login-card" id="admin-login-card" style="display: none;">
+                    <h2><i class="fas fa-user-shield"></i> Admin Login</h2>
+                    <form class="login-form" id="admin-login-form">
+                        <div class="form-group">
+                            <label class="form-label">Username</label>
+                            <input type="text" class="form-control" id="admin-username" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Password</label>
+                            <input type="password" class="form-control" id="admin-password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Login</button>
+                        <button type="button" class="btn btn-secondary btn-block" id="show-visitor-login">Back to Visitor Login</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Admin Portal -->
+        <div id="admin-portal">
+            <div class="portal-container">
+                <!-- Sidebar -->
+                <div class="sidebar">
+                    <div class="portal-logo">
+                        <h2><i class="fas fa-monument"></i> GMS Admin</h2>
+                    </div>
+                    
+                    <ul class="menu">
+                        <li class="menu-item active" data-target="dashboard">
+                            <i class="fas fa-th-large"></i> Dashboard
+                        </li>
+                        <li class="menu-item" data-target="add-record">
+                            <i class="fas fa-plus-circle"></i> Add New Record
+                        </li>
+                        <li class="menu-item" data-target="manage-visitors">
+                            <i class="fas fa-users"></i> Manage Visitor Accounts
+                        </li>
+                        <li class="menu-item" data-target="view-records">
+                            <i class="fas fa-database"></i> View Records
+                        </li>
+                        <li class="menu-item notification-item" data-target="messages">
+                            <i class="fas fa-envelope"></i> Messages & Notifications
+                            <span class="notification-badge" id="notification-count">0</span>
+                        </li>
+                        <li class="menu-item" data-target="settings">
+                            <i class="fas fa-cog"></i> Settings
+                        </li>
+                        <li class="menu-item" id="admin-logout">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Main Content -->
+                <div class="main-content">
+                    <div class="header">
+                        <h1>Graveyard Management System</h1>
+                        <div class="user-info">
+                            <img src="https://ui-avatars.com/api/?name=Admin+User&background=16a085&color=fff" alt="Admin User">
+                            <span>Admin User</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Dashboard Section -->
+                    <div id="dashboard" class="section active">
+                        <div class="stats-container">
+                            <div class="stat-card" data-target="view-records">
+                                <div class="stat-icon primary">
+                                    <i class="fas fa-monument"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3 id="total-graves">0</h3>
+                                    <p>Total Graves</p>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-card" data-target="manage-visitors">
+                                <div class="stat-icon warning">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3 id="total-visitors">0</h3>
+                                    <p>Visitor Accounts</p>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-card" data-target="messages">
+                                <div class="stat-icon danger">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3 id="unread-messages">0</h3>
+                                    <p>Unread Messages</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="card-title">Recent Activity</h2>
+                            </div>
+                            <div id="recent-activity">
+                                <p>No recent activity</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Add New Record Section -->
+                    <div id="add-record" class="section">
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="card-title">Add New Grave Record</h2>
+                            </div>
+                            
+                            <form id="grave-record-form">
+                                <div class="form-group">
+                                    <label class="form-label">Deceased's Name *</label>
+                                    <input type="text" class="form-control" id="deceased-name" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Submitted By *</label>
+                                    <input type="text" class="form-control" id="submitted-by" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Next of Kin *</label>
+                                    <input type="text" class="form-control" id="next-of-kin" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Relative Contact *</label>
+                                    <input type="text" class="form-control" id="relative-contact" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Height *</label>
+                                    <input type="text" class="form-control" id="height" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Weight *</label>
+                                    <input type="text" class="form-control" id="weight" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Grave Location *</label>
+                                    <input type="text" class="form-control" id="grave-location" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Additional Notes/Epitaph</label>
+                                    <textarea class="form-control" id="additional-notes"></textarea>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary">Save Record</button>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- Manage Visitors Section -->
+                    <div id="manage-visitors" class="section">
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="card-title">Create New Visitor Account</h2>
+                            </div>
+                            
+                            <form id="visitor-form">
+                                <div class="form-group">
+                                    <label class="form-label">Full Name *</label>
+                                    <input type="text" class="form-control" id="visitor-fullname" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Username *</label>
+                                    <input type="text" class="form-control" id="visitor-username-create" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Password *</label>
+                                    <input type="password" class="form-control" id="visitor-password-create" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Contact Email *</label>
+                                    <input type="email" class="form-control" id="visitor-email" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Phone Number</label>
+                                    <input type="tel" class="form-control" id="visitor-phone">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Associated Grave ID *</label>
+                                    <input type="text" class="form-control" id="visitor-grave-id" required>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary">Create Account</button>
+                            </form>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="card-title">Manage Visitor Accounts</h2>
+                            </div>
+                            
+                            <table class="table" id="visitors-table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Username</th>
+                                        <th>Grave ID</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Visitor data will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- View Records Section -->
+                    <div id="view-records" class="section">
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="card-title">Grave Records</h2>
+                            </div>
+                            
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="grave-search" placeholder="Search records...">
+                            </div>
+                            
+                            <table class="table" id="graves-table">
+                                <thead>
+                                    <tr>
+                                        <th>Grave ID</th>
+                                        <th>Deceased's Name</th>
+                                        <th>Next of Kin</th>
+                                        <th>Location</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Grave data will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- Messages Section -->
+                    <div id="messages" class="section">
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="card-title">Send Message to Visitors</h2>
+                            </div>
+                            
+                            <form id="message-form">
+                                <div class="form-group">
+                                    <label class="form-label">Recipient</label>
+                                    <select class="form-control" id="message-recipient">
+                                        <option value="all">All Visitors</option>
+                                        <!-- Visitor options will be populated here -->
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Subject *</label>
+                                    <input type="text" class="form-control" id="message-subject" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Message *</label>
+                                    <textarea class="form-control" id="message-content" required></textarea>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary">Send Message</button>
+                            </form>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="card-title">Received Messages</h2>
+                            </div>
+                            
+                            <table class="table" id="messages-table">
+                                <thead>
+                                    <tr>
+                                        <th>From</th>
+                                        <th>Subject</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Messages will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- Settings Section -->
+                    <div id="settings" class="section">
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="card-title">Admin Account Management</h2>
+                            </div>
+                            
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Admin User</td>
+                                        <td>admin@graveyard.example.com</td>
+                                        <td>Super Admin</td>
+                                        <td class="action-buttons">
+                                            <button class="btn btn-primary">Edit</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            
+                            <button class="btn btn-primary" style="margin: 20px;" id="create-admin-btn">Create New Admin Account</button>
+                        </div>
+                        
+                        <div class="card" id="admin-create-form" style="display: none;">
+                            <div class="card-header">
+                                <h2 class="card-title">Create New Admin Account</h2>
+                            </div>
+                            
+                            <form id="admin-form">
+                                <div class="form-group">
+                                    <label class="form-label">Full Name *</label>
+                                    <input type="text" class="form-control" id="admin-fullname" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Email *</label>
+                                    <input type="email" class="form-control" id="admin-email" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Password *</label>
+                                    <input type="password" class="form-control" id="admin-password-create" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Confirm Password *</label>
+                                    <input type="password" class="form-control" id="admin-confirm-password" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Secure Code *</label>
+                                    <input type="password" class="form-control" id="secure-code" required>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary">Create Admin Account</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Visitor Portal -->
+        <div id="visitor-portal">
+            <div class="visitor-header">
+                <h1><i class="fas fa-monument"></i> Visitor Portal</h1>
+                <p>Access grave information and communicate with administration</p>
+                <button class="btn btn-primary" id="visitor-logout" style="margin-top: 20px;">Logout</button>
+            </div>
+            
+            <div class="visitor-options">
+                <div class="visitor-option" id="view-record-btn">
+                    <i class="fas fa-database"></i>
+                    <h3>View Records</h3>
+                    <p>Access all grave information</p>
+                </div>
+                
+                <div class="visitor-option" id="message-admin-btn">
+                    <i class="fas fa-envelope"></i>
+                    <h3>Message Admin</h3>
+                    <p>Contact graveyard management</p>
+                </div>
+            </div>
+            
+            <!-- Grave Records Section -->
+            <div class="card" id="grave-records-section" style="display: none; margin-top: 30px;">
+                <div class="card-header">
+                    <h2 class="card-title">Grave Records</h2>
+                </div>
+                
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Search records..." id="visitor-grave-search">
+                </div>
+                
+                <table class="table" id="visitor-graves-table">
+                    <thead>
+                        <tr>
+                            <th>Grave ID</th>
+                            <th>Deceased's Name</th>
+                            <th>Location</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Grave data will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Grave Detail View -->
+            <div class="card" id="grave-detail-view" style="display: none; margin-top: 30px;">
+                <div class="card-header">
+                    <h2 class="card-title">Grave Details</h2>
+                    <button class="btn btn-primary" id="back-to-records">Back to Records</button>
+                </div>
+                
+                <div id="grave-detail-content">
+                    <p><strong>Deceased Name:</strong> <span id="detail-name"></span></p>
+                    <p><strong>Grave ID:</strong> <span id="detail-id"></span></p>
+                    <p><strong>Location:</strong> <span id="detail-location"></span></p>
+                    <p><strong>Next of Kin:</strong> <span id="detail-kin"></span></p>
+                    <p><strong>Date of Burial:</strong> <span id="detail-date"></span></p>
+                    <p><strong>Additional Notes:</strong> <span id="detail-notes"></span></p>
+                </div>
+            </div>
+            
+            <div class="card" id="message-admin-form" style="display: none; margin-top: 30px;">
+                <div class="card-header">
+                    <h2 class="card-title">Message Administration</h2>
+                </div>
+                
+                <form id="visitor-message-form">
+                    <div class="form-group">
+                        <label class="form-label">Subject *</label>
+                        <input type="text" class="form-control" id="visitor-message-subject" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Message *</label>
+                        <textarea class="form-control" id="visitor-message-content" required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data storage functions
+        function getStoredData(key) {
+            const data = localStorage.getItem(key);
+            return data ? JSON.parse(data) : [];
+        }
+
+        function setStoredData(key, data) {
+            localStorage.setItem(key, JSON.stringify(data));
+        }
+
+        // Initialize data if not exists
+        function initializeData() {
+            if (!localStorage.getItem('graveRecords')) {
+                const sampleGraves = [
+                    {
+                        id: "GRAVE-2023-042",
+                        name: "Alice Smith",
+                        location: "Section A, Plot 12",
+                        kin: "John Smith",
+                        date: "2023-05-15",
+                        notes: "Beloved mother and wife. Forever in our hearts.",
+                        submittedBy: "John Smith",
+                        relativeContact: "john@example.com",
+                        height: "5'8\"",
+                        weight: "160 lbs"
+                    },
+                    {
+                        id: "GRAVE-2023-078",
+                        name: "Carlos Garcia",
+                        location: "Section B, Plot 24",
+                        kin: "Maria Garcia",
+                        date: "2023-06-22",
+                        notes: "Loving father and grandfather. May he rest in peace.",
+                        submittedBy: "Maria Garcia",
+                        relativeContact: "maria@example.com",
+                        height: "5'10\"",
+                        weight: "180 lbs"
+                    },
+                    {
+                        id: "GRAVE-2023-105",
+                        name: "Elizabeth Johnson",
+                        location: "Section C, Plot 07",
+                        kin: "Robert Johnson",
+                        date: "2023-07-30",
+                        notes: "Devoted teacher and community volunteer.",
+                        submittedBy: "Robert Johnson",
+                        relativeContact: "robert@example.com",
+                        height: "5'5\"",
+                        weight: "140 lbs"
+                    }
+                ];
+                setStoredData('graveRecords', sampleGraves);
+            }
+
+            if (!localStorage.getItem('visitorAccounts')) {
+                const sampleVisitors = [
+                    {
+                        id: 1,
+                        fullName: "John Smith",
+                        username: "john.smith",
+                        password: "password123",
+                        email: "john@example.com",
+                        phone: "555-1234",
+                        graveId: "GRAVE-2023-042",
+                        status: "Active"
+                    },
+                    {
+                        id: 2,
+                        fullName: "Maria Garcia",
+                        username: "maria.g",
+                        password: "password123",
+                        email: "maria@example.com",
+                        phone: "555-5678",
+                        graveId: "GRAVE-2023-078",
+                        status: "Active"
+                    }
+                ];
+                setStoredData('visitorAccounts', sampleVisitors);
+            }
+
+            if (!localStorage.getItem('messages')) {
+                setStoredData('messages', []);
+            }
+
+            if (!localStorage.getItem('notifications')) {
+                setStoredData('notifications', []);
+            }
+        }
+
+        // Generate a unique ID
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2);
+        }
+
+        // Update dashboard stats
+        function updateDashboardStats() {
+            const graves = getStoredData('graveRecords');
+            const visitors = getStoredData('visitorAccounts');
+            const messages = getStoredData('messages');
+            const unreadCount = messages.filter(msg => msg.status === 'unread').length;
+            
+            document.getElementById('total-graves').textContent = graves.length;
+            document.getElementById('total-visitors').textContent = visitors.length;
+            document.getElementById('unread-messages').textContent = unreadCount;
+            document.getElementById('notification-count').textContent = unreadCount;
+            
+            // Update recent activity
+            const recentActivity = document.getElementById('recent-activity');
+            if (graves.length > 0) {
+                const recentGraves = graves.slice(-3).reverse();
+                recentActivity.innerHTML = recentGraves.map(grave => 
+                    `<p>Added grave record for ${grave.name} (${grave.id}) on ${grave.date}</p>`
+                ).join('');
+            } else {
+                recentActivity.innerHTML = '<p>No recent activity</p>';
+            }
+        }
+
+        // Populate graves table
+        function populateGravesTable() {
+            const graves = getStoredData('graveRecords');
+            const tableBody = document.querySelector('#graves-table tbody');
+            tableBody.innerHTML = '';
+            
+            graves.forEach(grave => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${grave.id}</td>
+                    <td>${grave.name}</td>
+                    <td>${grave.kin}</td>
+                    <td>${grave.location}</td>
+                    <td class="action-buttons">
+                        <button class="btn btn-primary view-grave" data-id="${grave.id}">View</button>
+                        <button class="btn btn-danger delete-grave" data-id="${grave.id}">Delete</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+            
+            // Add event listeners
+            document.querySelectorAll('.view-grave').forEach(button => {
+                button.addEventListener('click', function() {
+                    const graveId = this.getAttribute('data-id');
+                    viewGraveDetails(graveId);
+                });
+            });
+            
+            document.querySelectorAll('.delete-grave').forEach(button => {
+                button.addEventListener('click', function() {
+                    const graveId = this.getAttribute('data-id');
+                    deleteGrave(graveId);
+                });
+            });
+        }
+        
+        // Populate visitor graves table
+        function populateVisitorGravesTable() {
+            const graves = getStoredData('graveRecords');
+            const tableBody = document.querySelector('#visitor-graves-table tbody');
+            tableBody.innerHTML = '';
+            
+            graves.forEach(grave => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${grave.id}</td>
+                    <td>${grave.name}</td>
+                    <td>${grave.location}</td>
+                    <td class="action-buttons">
+                        <button class="btn btn-primary view-grave-visitor" data-id="${grave.id}">View Details</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+            
+            // Add event listeners
+            document.querySelectorAll('.view-grave-visitor').forEach(button => {
+                button.addEventListener('click', function() {
+                    const graveId = this.getAttribute('data-id');
+                    viewGraveDetailsVisitor(graveId);
+                });
+            });
+        }
+
+        // View grave details (admin)
+        function viewGraveDetails(graveId) {
+            const graves = getStoredData('graveRecords');
+            const grave = graves.find(g => g.id === graveId);
+            
+            if (grave) {
+                alert(`Grave Details:\nID: ${grave.id}\nName: ${grave.name}\nLocation: ${grave.location}\nNext of Kin: ${grave.kin}\nSubmitted By: ${grave.submittedBy}\nContact: ${grave.relativeContact}\nHeight: ${grave.height}\nWeight: ${grave.weight}\nNotes: ${grave.notes}`);
+            }
+        }
+        
+        // View grave details (visitor)
+        function viewGraveDetailsVisitor(graveId) {
+            const graves = getStoredData('graveRecords');
+            const grave = graves.find(g => g.id === graveId);
+            
+            if (grave) {
+                document.getElementById('detail-name').textContent = grave.name;
+                document.getElementById('detail-id').textContent = grave.id;
+                document.getElementById('detail-location').textContent = grave.location;
+                document.getElementById('detail-kin').textContent = grave.kin;
+                document.getElementById('detail-date').textContent = grave.date;
+                document.getElementById('detail-notes').textContent = grave.notes;
+                
+                document.getElementById('grave-records-section').style.display = 'none';
+                document.getElementById('grave-detail-view').style.display = 'block';
+            }
+        }
+
+        // Delete grave
+        function deleteGrave(graveId) {
+            if (confirm('Are you sure you want to delete this grave record? This action cannot be undone.')) {
+                let graves = getStoredData('graveRecords');
+                graves = graves.filter(grave => grave.id !== graveId);
+                setStoredData('graveRecords', graves);
+                
+                // Also remove any visitor accounts associated with this grave
+                let visitors = getStoredData('visitorAccounts');
+                visitors = visitors.filter(visitor => visitor.graveId !== graveId);
+                setStoredData('visitorAccounts', visitors);
+                
+                populateGravesTable();
+                populateVisitorsTable();
+                updateDashboardStats();
+                alert('Grave record deleted successfully!');
+            }
+        }
+
+        // Populate visitors table
+        function populateVisitorsTable() {
+            const visitors = getStoredData('visitorAccounts');
+            const tableBody = document.querySelector('#visitors-table tbody');
+            tableBody.innerHTML = '';
+            
+            visitors.forEach(visitor => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${visitor.fullName}</td>
+                    <td>${visitor.username}</td>
+                    <td>${visitor.graveId}</td>
+                    <td>${visitor.status}</td>
+                    <td class="action-buttons">
+                        <button class="btn btn-primary edit-visitor" data-id="${visitor.id}">Edit</button>
+                        <button class="btn btn-danger delete-visitor" data-id="${visitor.id}">Delete</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+            
+            // Add event listeners
+            document.querySelectorAll('.delete-visitor').forEach(button => {
+                button.addEventListener('click', function() {
+                    const visitorId = this.getAttribute('data-id');
+                    deleteVisitor(visitorId);
+                });
+            });
+            
+            // Populate message recipient dropdown
+            const recipientDropdown = document.getElementById('message-recipient');
+            // Clear existing options except "All Visitors"
+            while (recipientDropdown.options.length > 1) {
+                recipientDropdown.remove(1);
+            }
+            
+            // Add visitor options
+            visitors.forEach(visitor => {
+                const option = document.createElement('option');
+                option.value = visitor.id;
+                option.textContent = `${visitor.fullName} (${visitor.graveId})`;
+                recipientDropdown.appendChild(option);
+            });
+        }
+
+        // Delete visitor
+        function deleteVisitor(visitorId) {
+            if (confirm('Are you sure you want to delete this visitor account? This action cannot be undone.')) {
+                let visitors = getStoredData('visitorAccounts');
+                visitors = visitors.filter(visitor => visitor.id != visitorId);
+                setStoredData('visitorAccounts', visitors);
+                
+                populateVisitorsTable();
+                updateDashboardStats();
+                alert('Visitor account deleted successfully!');
+            }
+        }
+
+        // Populate messages table
+        function populateMessagesTable() {
+            const messages = getStoredData('messages');
+            const tableBody = document.querySelector('#messages-table tbody');
+            tableBody.innerHTML = '';
+            
+            messages.forEach(message => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${message.from}</td>
+                    <td>${message.subject}</td>
+                    <td>${message.date}</td>
+                    <td>${message.status}</td>
+                    <td class="action-buttons">
+                        <button class="btn btn-primary view-message" data-id="${message.id}">View</button>
+                        <button class="btn btn-danger delete-message" data-id="${message.id}">Delete</button>
+                    </td>
+                `;
+                if (message.status === 'unread') {
+                    row.style.fontWeight = 'bold';
+                }
+                tableBody.appendChild(row);
+            });
+            
+            // Add event listeners
+            document.querySelectorAll('.view-message').forEach(button => {
+                button.addEventListener('click', function() {
+                    const messageId = this.getAttribute('data-id');
+                    viewMessage(messageId);
+                });
+            });
+            
+            document.querySelectorAll('.delete-message').forEach(button => {
+                button.addEventListener('click', function() {
+                    const messageId = this.getAttribute('data-id');
+                    deleteMessage(messageId);
+                });
+            });
+        }
+
+        // View message
+        function viewMessage(messageId) {
+            let messages = getStoredData('messages');
+            const message = messages.find(m => m.id == messageId);
+            
+            if (message) {
+                // Mark as read
+                message.status = 'read';
+                setStoredData('messages', messages);
+                
+                // Show message content
+                alert(`Message from: ${message.from}\nDate: ${message.date}\nSubject: ${message.subject}\n\n${message.content}`);
+                
+                // Update UI
+                populateMessagesTable();
+                updateDashboardStats();
+            }
+        }
+
+        // Delete message
+        function deleteMessage(messageId) {
+            if (confirm('Are you sure you want to delete this message?')) {
+                let messages = getStoredData('messages');
+                messages = messages.filter(message => message.id != messageId);
+                setStoredData('messages', messages);
+                
+                populateMessagesTable();
+                updateDashboardStats();
+                alert('Message deleted successfully!');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize data
+            initializeData();
+            
+            // Login functionality
+            const adminLoginForm = document.getElementById('admin-login-form');
+            const visitorLoginForm = document.getElementById('visitor-login-form');
+            const loginScreen = document.getElementById('login-screen');
+            const adminPortal = document.getElementById('admin-portal');
+            const visitorPortal = document.getElementById('visitor-portal');
+            const showAdminLogin = document.getElementById('show-admin-login');
+            const showVisitorLogin = document.getElementById('show-visitor-login');
+            const adminLoginCard = document.getElementById('admin-login-card');
+            
+            // Show admin login
+            showAdminLogin.addEventListener('click', function() {
+                document.querySelector('.login-card').style.display = 'none';
+                adminLoginCard.style.display = 'block';
+            });
+            
+            // Show visitor login
+            showVisitorLogin.addEventListener('click', function() {
+                adminLoginCard.style.display = 'none';
+                document.querySelector('.login-card').style.display = 'block';
+            });
+            
+            // Admin login
+            adminLoginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const username = document.getElementById('admin-username').value;
+                const password = document.getElementById('admin-password').value;
+                
+                // Simple validation
+                if (username === 'admin' && password === 'admin123') {
+                    loginScreen.style.display = 'none';
+                    adminPortal.style.display = 'block';
+                    
+                    // Update data on login
+                    updateDashboardStats();
+                    populateGravesTable();
+                    populateVisitorsTable();
+                    populateMessagesTable();
+                } else {
+                    alert('Invalid admin credentials. Try username: admin, password: admin123');
+                }
+            });
+            
+            // Visitor login
+            visitorLoginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const username = document.getElementById('visitor-username').value;
+                const password = document.getElementById('visitor-password').value;
+                
+                const visitors = getStoredData('visitorAccounts');
+                const visitor = visitors.find(v => v.username === username && v.password === password);
+                
+                if (visitor) {
+                    loginScreen.style.display = 'none';
+                    visitorPortal.style.display = 'block';
+                    
+                    // Update data on login
+                    populateVisitorGravesTable();
+                } else {
+                    alert('Invalid visitor credentials. Try username: john.smith, password: password123');
+                }
+            });
+            
+            // Admin portal navigation
+            const menuItems = document.querySelectorAll('.menu-item');
+            const sections = document.querySelectorAll('.section');
+            
+            menuItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    if (this.id === 'admin-logout') {
+                        adminPortal.style.display = 'none';
+                        loginScreen.style.display = 'block';
+                        return;
+                    }
+                    
+                    const target = this.getAttribute('data-target');
+                    
+                    if (target) {
+                        // Remove active class from all menu items and sections
+                        menuItems.forEach(mi => mi.classList.remove('active'));
+                        sections.forEach(s => s.classList.remove('active'));
+                        
+                        // Add active class to clicked menu item and target section
+                        this.classList.add('active');
+                        document.getElementById(target).classList.add('active');
+                        
+                        // Refresh data when navigating to certain sections
+                        if (target === 'view-records') {
+                            populateGravesTable();
+                        } else if (target === 'manage-visitors') {
+                            populateVisitorsTable();
+                        } else if (target === 'messages') {
+                            populateMessagesTable();
+                        }
+                    }
+                });
+            });
+            
+            // Dashboard stat cards navigation
+            document.querySelectorAll('.stat-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const target = this.getAttribute('data-target');
+                    if (target) {
+                        // Remove active class from all menu items and sections
+                        menuItems.forEach(mi => mi.classList.remove('active'));
+                        sections.forEach(s => s.classList.remove('active'));
+                        
+                        // Add active class to target menu item and section
+                        document.querySelector(`.menu-item[data-target="${target}"]`).classList.add('active');
+                        document.getElementById(target).classList.add('active');
+                        
+                        // Refresh data
+                        if (target === 'view-records') {
+                            populateGravesTable();
+                        } else if (target === 'manage-visitors') {
+                            populateVisitorsTable();
+                        } else if (target === 'messages') {
+                            populateMessagesTable();
+                        }
+                    }
+                });
+            });
+            
+            // Add new grave record
+            document.getElementById('grave-record-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const graves = getStoredData('graveRecords');
+                const newGrave = {
+                    id: 'GRAVE-' + new Date().getFullYear() + '-' + (graves.length + 1).toString().padStart(3, '0'),
+                    name: document.getElementById('deceased-name').value,
+                    submittedBy: document.getElementById('submitted-by').value,
+                    kin: document.getElementById('next-of-kin').value,
+                    relativeContact: document.getElementById('relative-contact').value,
+                    height: document.getElementById('height').value,
+                    weight: document.getElementById('weight').value,
+                    location: document.getElementById('grave-location').value,
+                    notes: document.getElementById('additional-notes').value,
+                    date: new Date().toISOString().split('T')[0]
+                };
+                
+                graves.push(newGrave);
+                setStoredData('graveRecords', graves);
+                
+                this.reset();
+                populateGravesTable();
+                updateDashboardStats();
+                
+                alert('Grave record saved successfully!');
+            });
+            
+            // Add new visitor account
+            document.getElementById('visitor-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const visitors = getStoredData('visitorAccounts');
+                const newVisitor = {
+                    id: generateId(),
+                    fullName: document.getElementById('visitor-fullname').value,
+                    username: document.getElementById('visitor-username-create').value,
+                    password: document.getElementById('visitor-password-create').value,
+                    email: document.getElementById('visitor-email').value,
+                    phone: document.getElementById('visitor-phone').value,
+                    graveId: document.getElementById('visitor-grave-id').value,
+                    status: 'Active'
+                };
+                
+                visitors.push(newVisitor);
+                setStoredData('visitorAccounts', visitors);
+                
+                this.reset();
+                populateVisitorsTable();
+                updateDashboardStats();
+                
+                alert('Visitor account created successfully!');
+            });
+            
+            // Send message to visitors
+            document.getElementById('message-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const messages = getStoredData('messages');
+                const recipient = document.getElementById('message-recipient').value;
+                const recipientName = recipient === 'all' ? 'All Visitors' : document.getElementById('message-recipient').options[document.getElementById('message-recipient').selectedIndex].text;
+                
+                const newMessage = {
+                    id: generateId(),
+                    from: 'Admin',
+                    to: recipient,
+                    toName: recipientName,
+                    subject: document.getElementById('message-subject').value,
+                    content: document.getElementById('message-content').value,
+                    date: new Date().toLocaleString(),
+                    status: 'unread'
+                };
+                
+                messages.push(newMessage);
+                setStoredData('messages', messages);
+                
+                this.reset();
+                populateMessagesTable();
+                updateDashboardStats();
+                
+                alert('Message sent successfully!');
+            });
+            
+            // Create admin account
+            document.getElementById('admin-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const secureCode = document.getElementById('secure-code').value;
+                if (secureCode !== 'ADMIN123') {
+                    alert('Invalid secure code!');
+                    return;
+                }
+                
+                const password = document.getElementById('admin-password-create').value;
+                const confirmPassword = document.getElementById('admin-confirm-password').value;
+                
+                if (password !== confirmPassword) {
+                    alert('Passwords do not match!');
+                    return;
+                }
+                
+                alert('Admin account created successfully!');
+                this.reset();
+                document.getElementById('admin-create-form').style.display = 'none';
+            });
+            
+            // Create admin account button
+            const createAdminBtn = document.getElementById('create-admin-btn');
+            const adminCreateForm = document.getElementById('admin-create-form');
+            
+            createAdminBtn.addEventListener('click', function() {
+                adminCreateForm.style.display = adminCreateForm.style.display === 'none' ? 'block' : 'none';
+            });
+            
+            // Visitor portal functionality
+            const viewRecordBtn = document.getElementById('view-record-btn');
+            const messageAdminBtn = document.getElementById('message-admin-btn');
+            const messageAdminForm = document.getElementById('message-admin-form');
+            const graveRecordsSection = document.getElementById('grave-records-section');
+            const graveDetailView = document.getElementById('grave-detail-view');
+            const backToRecordsBtn = document.getElementById('back-to-records');
+            const visitorLogout = document.getElementById('visitor-logout');
+            const graveSearch = document.getElementById('visitor-grave-search');
+            
+            viewRecordBtn.addEventListener('click', function() {
+                messageAdminForm.style.display = 'none';
+                graveDetailView.style.display = 'none';
+                graveRecordsSection.style.display = graveRecordsSection.style.display === 'none' ? 'block' : 'none';
+                populateVisitorGravesTable();
+            });
+            
+            messageAdminBtn.addEventListener('click', function() {
+                graveRecordsSection.style.display = 'none';
+                graveDetailView.style.display = 'none';
+                messageAdminForm.style.display = messageAdminForm.style.display === 'none' ? 'block' : 'none';
+            });
+            
+            backToRecordsBtn.addEventListener('click', function() {
+                graveDetailView.style.display = 'none';
+                graveRecordsSection.style.display = 'block';
+            });
+            
+            // Visitor send message
+            document.getElementById('visitor-message-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const messages = getStoredData('messages');
+                const visitors = getStoredData('visitorAccounts');
+                const currentVisitor = visitors[0]; // Simplified for demo
+                
+                const newMessage = {
+                    id: generateId(),
+                    from: currentVisitor.fullName,
+                    fromId: currentVisitor.id,
+                    to: 'admin',
+                    toName: 'Administration',
+                    subject: document.getElementById('visitor-message-subject').value,
+                    content: document.getElementById('visitor-message-content').value,
+                    date: new Date().toLocaleString(),
+                    status: 'unread'
+                };
+                
+                messages.push(newMessage);
+                setStoredData('messages', messages);
+                
+                this.reset();
+                alert('Message sent to administration successfully!');
+            });
+            
+            // Grave search functionality
+            graveSearch.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const rows = document.querySelectorAll('#visitor-graves-table tbody tr');
+                
+                rows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    row.style.display = text.includes(searchTerm) ? '' : 'none';
+                });
+            });
+            
+            visitorLogout.addEventListener('click', function() {
+                visitorPortal.style.display = 'none';
+                loginScreen.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html>
